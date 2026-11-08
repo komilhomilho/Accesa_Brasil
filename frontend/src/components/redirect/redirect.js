@@ -1,4 +1,4 @@
-export function iniciar() {
+export function init() {
     const targetUrl = sessionStorage.getItem('redirectTarget');
 
     if (!targetUrl) {
@@ -6,24 +6,23 @@ export function iniciar() {
         return;
     }
 
-    // Espera 2 segundos para o usuário ler
+    // Wait 1 second for the user to read the message
     setTimeout(() => {
         sessionStorage.removeItem('redirectTarget');
-        
-        let urlFinal = targetUrl;
-        if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
-            urlFinal = 'https://' + urlFinal;
+
+        let finalUrl = targetUrl;
+        if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+            finalUrl = 'https://' + finalUrl;
         }
 
-        // 1. Muda a página internamente
+        // Change page internally
         try {
             window.switchPage('home');
-        } catch(e) {}
+        } catch (e) {}
 
-        // 2. Dá uma pausa de 100ms para o iPhone "respirar" e terminar de processar o switchPage.
-        // Só depois dessa pausa ele redireciona para o site externo.
+        // Short pause so the page switch can complete before external redirect
         setTimeout(() => {
-            window.location.href = urlFinal;
+            window.location.href = finalUrl;
         }, 100);
 
     }, 1000);

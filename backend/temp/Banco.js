@@ -1,35 +1,35 @@
 db.link.insertMany([
     {
-        nome: " Calendário de Vacinação",
-        desc: "",
-        URL: "https://www.gov.br/saude/pt-br/vacinacao/calendario",
+        name: "Calendário de Vacinação",
+        description: "",
+        url: "https://www.gov.br/saude/pt-br/vacinacao/calendario",
         tags: ["vacinação", "informativo", "saúde"]
     },
     {
-        nome: "Bilhete sptrans para pcds",
-        desc: "",
-        URL: "https://bilheteunico.sptrans.com.br/especial/pessoa-com-deficiencia/",
+        name: "Bilhete SPTrans para PCDs",
+        description: "",
+        url: "https://bilheteunico.sptrans.com.br/especial/pessoa-com-deficiencia/",
         tags: ["pcd", "transporte", "deficiência", "bilhete unico", "mobilidade"]
     },
     {
-        nome: "solicitar Benefício Assistencial à Pessoas com Deficiência",
-        desc: "",
-        URL: "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
+        name: "Solicitar Benefício Assistencial à Pessoa com Deficiência",
+        description: "",
+        url: "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
         tags: ["auxílio", "pcd", "deficiência", "assistência", "solicitação"]
     },
     {
-        nome: "CadÚnico",
-        desc: "",
-        URL: "https://cadunico.dataprev.gov.br/#/programas-sociai",
+        name: "CadÚnico",
+        description: "",
+        url: "https://cadunico.dataprev.gov.br/#/programas-sociai",
         tags: ["cadastro", "auxílio", "baixa renda", "programa social"]
     },
     {
-        nome: "Agendamento UBS",
-        desc: "",
-        URL: "https://agendafacil.prefeitura.sp.gov.br/saude",
+        name: "Agendamento UBS",
+        description: "",
+        url: "https://agendafacil.prefeitura.sp.gov.br/saude",
         tags: ["saúde", "agendar"]
     }
 ].map(doc => ({
     ...doc,
-    historicoAtualizacoes: [new Date()] // Injeta a data atual no primeiro índice
-})))
+    lastUpdated: new Date()
+})));

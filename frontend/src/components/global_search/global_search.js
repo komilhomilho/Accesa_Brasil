@@ -1,6 +1,6 @@
 import storageService from '../../services/storage.service.js';
 
-export function iniciar() {
+export function init() {
     const searchInput = document.getElementById('searchBarGlobal');
     const searchResultsContainer = document.getElementById('searchResults');
 
@@ -32,7 +32,7 @@ export function iniciar() {
             cardElement.style.cursor = 'pointer';
 
             const displayTitle = item.titulo || item.title || item.nome || item.name || 'Link sem título';
-            const displayUrl = item.url || item.url || item.link || '#'; 
+            const displayUrl = item.url || item.link || '#';
 
             cardElement.innerHTML = `
     <div class="w-100" style="overflow: hidden;">
@@ -66,16 +66,16 @@ export function iniciar() {
 
             const filteredResults = databaseItems.filter(item => {
                 const title = (item.titulo || item.title || item.nome || item.name || '').toLowerCase();
-                const url = (item.url || item.url || item.link || '').toLowerCase();
-                
-                let textoDasTags = '';
+                const url = (item.url || item.link || '').toLowerCase();
+
+                let tagsText = '';
                 if (Array.isArray(item.tags)) {
-                    textoDasTags = item.tags.join(' ').toLowerCase();
+                    tagsText = item.tags.join(' ').toLowerCase();
                 } else {
-                    textoDasTags = (item.tag || item.tags || item.categoria || item.category || '').toLowerCase();
+                    tagsText = (item.tag || item.tags || item.categoria || item.category || '').toLowerCase();
                 }
 
-                return title.includes(searchTerm) || url.includes(searchTerm) || textoDasTags.includes(searchTerm);
+                return title.includes(searchTerm) || url.includes(searchTerm) || tagsText.includes(searchTerm);
             });
 
             renderResults(filteredResults);

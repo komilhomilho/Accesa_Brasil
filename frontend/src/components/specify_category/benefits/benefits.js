@@ -1,23 +1,23 @@
 import storageService from '../../../services/storage.service.js';
 
-export function iniciar() {
+export function init() {
     const container = document.querySelector('.specify-container');
     const searchInput = document.querySelector('.specify-search input');
 
     if (!container) return;
 
-    const todosOsDados = storageService.getLocalData();
+    const allData = storageService.getLocalData();
 
-    const dadosTransito = todosOsDados.filter(item => {
-        let textoDasTags = '';
+    const benefitsData = allData.filter(item => {
+        let tagsText = '';
 
         if (Array.isArray(item.tags)) {
-            textoDasTags = item.tags.join(' ').toLowerCase();
+            tagsText = item.tags.join(' ').toLowerCase();
         } else {
-            textoDasTags = (item.tag || item.categoria || item.category || '').toLowerCase();
+            tagsText = (item.tag || item.categoria || item.category || '').toLowerCase();
         }
 
-        return textoDasTags.includes('beneficio') || textoDasTags.includes('dinheiro');
+        return tagsText.includes('beneficio') || tagsText.includes('dinheiro');
     });
 
     function renderCategoryResults(itemsToRender) {
@@ -38,7 +38,7 @@ export function iniciar() {
             const cardElement = document.createElement('div');
 
             cardElement.classList.add('custom-card', 'shadow-sm', 'p-3', 'mb-3', 'rounded', 'w-100');
-            
+
             cardElement.style.cursor = 'pointer';
             cardElement.style.maxWidth = '100%';
             cardElement.style.overflow = 'hidden';
@@ -48,12 +48,11 @@ export function iniciar() {
             const displayTitle = item.titulo || item.title || item.nome || item.name || 'Serviço sem título';
             const displayUrl = item.url || item.link || '#';
 
-            // ATUALIZAÇÃO DE ACESSIBILIDADE AQUI:
-            cardElement.setAttribute('role', 'button'); // Diz ao leitor que é um botão
-            cardElement.setAttribute('tabindex', '0'); // Permite focar com a tecla TAB
-            cardElement.setAttribute('aria-label', `Acessar serviço: ${displayTitle}`); // O que será lido em voz alta
+            // Accessibility attributes
+            cardElement.setAttribute('role', 'button');
+            cardElement.setAttribute('tabindex', '0');
+            cardElement.setAttribute('aria-label', `Acessar serviço: ${displayTitle}`);
 
-            // O aria-hidden="true" impede que o leitor de tela leia a url e o título cru de novo
             cardElement.innerHTML = `
                 <div aria-hidden="true" style="min-width: 0; width: 100%;">
                     <h5 class="mb-1 text-truncate" style="color: white; width: 100%;">${displayTitle}</h5>
@@ -61,7 +60,7 @@ export function iniciar() {
                 </div>
             `;
 
-            // Ação de clique (Mouse/Toque)
+            // Click action (mouse/touch)
             cardElement.addEventListener('click', () => {
                 if (displayUrl && displayUrl !== '#') {
                     storageService.storageClickLink(displayTitle, displayUrl);
@@ -70,11 +69,11 @@ export function iniciar() {
                 }
             });
 
-            // Ação de teclado (Enter ou Espaço para quem usa leitor de tela/navegação por teclado)
-            cardElement.addEventListener('keydown', (evento) => {
-                if (evento.key === 'Enter' || evento.key === ' ') {
-                    evento.preventDefault(); // Evita que a página role para baixo ao apertar Espaço
-                    cardElement.click(); // Dispara a função de clique acima
+            // Keyboard action (Enter or Space)
+            cardElement.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    cardElement.click();
                 }
             });
 
@@ -82,18 +81,18 @@ export function iniciar() {
         });
     }
 
-    renderCategoryResults(dadosTransito);
+    renderCategoryResults(benefitsData);
 
     if (searchInput) {
         searchInput.addEventListener('input', (event) => {
             const searchTerm = event.target.value.toLowerCase().trim();
 
             if (searchTerm === '') {
-                renderCategoryResults(dadosTransito);
+                renderCategoryResults(benefitsData);
                 return;
             }
 
-            const filteredResults = dadosTransito.filter(item => {
+            const filteredResults = benefitsData.filter(item => {
                 const title = (item.titulo || item.title || item.nome || item.name || '').toLowerCase();
                 return title.includes(searchTerm);
             });

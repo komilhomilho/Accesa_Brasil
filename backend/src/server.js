@@ -1,15 +1,11 @@
 import 'dotenv/config';
 import app from './app.js';
-import connectionDB from './config/connectionDB.js';
+import connectDB from './config/connectionDB.js';
 
-const log = console.log;
-const portweb = process.env.PORT_WEB || 3000;
+const webPort = process.env.PORT_WEB || 3000;
 
-connectionDB();
+connectDB();
 
-app.listen(portweb, () => {
-    log(`[WEB] Servidor rodando em http://localhost:${portweb}`);
-
-    //scrapersModule.linksGov(); 
-    //scrapersModule.linksSP();
+app.listen(webPort, () => {
+    console.log.blue(`[WEB] Server running at http://localhost:${webPort}`);
 });

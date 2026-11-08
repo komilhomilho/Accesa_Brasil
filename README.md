@@ -1,8 +1,8 @@
-# Accela 🚀
+# Accela 
 
 O **Accela** é uma plataforma web desenvolvida para otimizar e centralizar o acesso a links de serviços públicos, benefícios e informações essenciais para famílias e cuidadores. O sistema possui foco em acessibilidade e suporte aos pacientes e parceiros da AACD.
 
-## 🏗️ Arquitetura do Projeto
+##  Arquitetura do Projeto
 
 O repositório utiliza um modelo de separação de responsabilidades, dividido em dois ecossistemas principais:
 
@@ -18,7 +18,7 @@ Interface do usuário construída de forma modular, sem frameworks pesados, util
 - **Categorias Específicas (`specify_category`)**: Interfaces segmentadas para roteamento de serviços vitais, divididas em `benefits`, `doc`, `health` e `transit`[cite: 1].
 - **Serviços (`/services`)**: Camada de comunicação responsável por requisições (`api.js`) e persistência local (`storage.service.js`)[cite: 1].
 
-## 🚀 Instalação e Execução
+##  Instalação e Execução
 
 ### Pré-requisitos
 - Node.js (v18 ou superior recomendado)

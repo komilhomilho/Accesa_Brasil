@@ -35,6 +35,7 @@ A aplicação reúne serviços oficiais do governo e das prefeituras (saúde, tr
 ---
 
 ## Estrutura do Projeto
+```
 Accesa_Brasil/
 ├── backend/
 │   ├── src/
@@ -78,7 +79,7 @@ Accesa_Brasil/
 ├── api.js               # Instância do Axios
 ├── mobile.service.js    # Sincronização e verificação de atualizações
 └── storage.service.js   # Abstração do localStoragetext
-
+```
 ---
 
 ## Visão Geral da Arquitetura

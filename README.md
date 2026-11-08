@@ -1,6 +1,6 @@
-# Accela 
+# Accesa Brasil 
 
-O **Accela** é uma plataforma web desenvolvida para otimizar e centralizar o acesso a links de serviços públicos, benefícios e informações essenciais para famílias e cuidadores. O sistema possui foco em acessibilidade e suporte aos pacientes e parceiros da AACD.
+O **Accesa Brasil** é uma plataforma web desenvolvida para otimizar e centralizar o acesso a links de serviços públicos, benefícios e informações essenciais para famílias e cuidadores. O sistema possui foco em acessibilidade e suporte aos pacientes e parceiros da AACD.
 
 ##  Arquitetura do Projeto
 

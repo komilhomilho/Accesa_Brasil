@@ -1,22 +1,21 @@
-
 import model from '../../shared/models/link.model.js';
 import redis, { ensureRedis } from '../../config/redis.js';
 
 const VERSION_KEY = "mobile:check-update:version";
 const CACHE_TTL = 60 * 60 * 24;
 
-function getDayKey() {
-    const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Sao_Paulo",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-    }).formatToParts(new Date());
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+});
 
+function getDayKey() {
+    const parts = dateFormatter.formatToParts(new Date());
     const date = Object.fromEntries(
         parts.map(({ type, value }) => [type, value])
     );
-
     return `${date.year}-${date.month}-${date.day}`;
 }
 
@@ -59,32 +58,23 @@ export default async function chkUpdate(last_sync) {
 
     const lastSync = new Date(timestamp);
 
-    // 1. Verifica se o Redis está disponível.
     const redisAvailable = await ensureRedis();
 
-    // 2. Sem Redis, consulta diretamente o MongoDB.
     if (!redisAvailable) {
         return await checkDatabase(lastSync);
     }
 
     let cacheKey;
 
-    // 3. Tenta encontrar o resultado no Redis.
     try {
         const version = await redis.get(VERSION_KEY) ?? "0";
 
-        cacheKey = [
-            "mobile",
-            "check-update",
-            version,
-            lastSync.toISOString(),
-            getDayKey()
-        ].join(":");
+        cacheKey = `mobile:check-update:${version}:${timestamp}:${getDayKey()}`;
 
         const cached = await redis.get(cacheKey);
 
         if (cached !== null) {
-            console.log.green("[Cache] hit");
+            console.log.gray("[Cache] hit");
             return cached === "1";
         }
 
@@ -95,10 +85,8 @@ export default async function chkUpdate(last_sync) {
         return await checkDatabase(lastSync);
     }
 
-    // 4. Cache vazio: consulta o MongoDB.
     const isUpdate = await checkDatabase(lastSync);
 
-    // 5. Tenta armazenar o resultado.
     try {
         await redis.set(
             cacheKey,

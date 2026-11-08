@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/komilhomilho/AACD_Accela/issues"
   },
@@ -23,15 +23,11 @@
     "@colors/colors": "^1.6.1",
     "axios": "^1.20.0",
     "cheerio": "^1.2.0",
-    "colors": "^1.4.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-slow-down": "^3.1.1",
     "mongoose": "^9.11.1",
     "nodemon": "^3.1.14",
     "redis": "^6.3.1"
-  },
-  "devDependencies": {
-    "autocannon": "^8.0.0"
   }
 }

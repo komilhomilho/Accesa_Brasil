@@ -1,11 +1,11 @@
-export function iniciar() {
-    const abasFaq = document.querySelectorAll('details.accordion-item');
+export function init() {
+    const faqItems = document.querySelectorAll('details.accordion-item');
 
-    abasFaq.forEach((aba) => {
-        aba.addEventListener('toggle', () => {
-            if (aba.open) {
+    faqItems.forEach((item) => {
+        item.addEventListener('toggle', () => {
+            if (item.open) {
                 setTimeout(() => {
-                    aba.scrollIntoView({
+                    item.scrollIntoView({
                         behavior: 'smooth',
                         block: 'center'
                     });

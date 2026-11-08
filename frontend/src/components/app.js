@@ -2,55 +2,53 @@ import { mapsPages } from './componentController.js';
 import mobileService from '../services/mobile.service.js';
 import storageService from '../services/storage.service.js';
 
-
 const app = document.getElementById('app');
 
-let tamanhoFonteAtual = parseInt(localStorage.getItem('tamanhoFonte')) || 100;
+let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 100;
 
-function aplicarTamanhoFonte() {
-    document.documentElement.style.fontSize = `${tamanhoFonteAtual}%`;
-    localStorage.setItem('tamanhoFonte', tamanhoFonteAtual);
+function applyFontSize() {
+    document.documentElement.style.fontSize = `${currentFontSize}%`;
+    localStorage.setItem('fontSize', currentFontSize);
 }
 
-aplicarTamanhoFonte();
+applyFontSize();
 
-async function switchPage(idDaPagina, registrarHistorico = true) {
-    const dadosDaPagina = mapsPages[idDaPagina];
+async function switchPage(pageId, registerHistory = true) {
+    const pageData = mapsPages[pageId];
 
-    if (!dadosDaPagina) {
+    if (!pageData) {
         app.innerHTML = "<h1>Erro</h1><p>Página não encontrada.</p>";
         return;
     }
 
-    if (registrarHistorico) {
-        window.history.pushState({ pagina: idDaPagina }, "", "");
+    if (registerHistory) {
+        window.history.pushState({ page: pageId }, "", "");
     }
 
     const navbar = document.querySelector('nav');
 
-    if (idDaPagina === 'redirect') {
+    if (pageId === 'redirect') {
         navbar.style.display = 'none';
     } else {
         navbar.style.display = '';
     }
 
-    app.innerHTML = dadosDaPagina.html;
+    app.innerHTML = pageData.html;
 
-    if (dadosDaPagina.js) {
+    if (pageData.js) {
         try {
-            const modulo = await import(dadosDaPagina.js);
-            if (modulo.iniciar) {
-                modulo.iniciar();
+            const module = await import(pageData.js);
+            if (module.init) {
+                module.init();
             }
-        } catch (erro) {
-            console.error(`Erro ao carregar o script da página ${idDaPagina}:`, erro);
+        } catch (error) {
+            console.error(`Error loading script for page ${pageId}:`, error);
         }
     }
 
     if (window.VLibras && window.VLibras.Widget) {
         window.dispatchEvent(new Event('load'));
     }
-
 }
 
 async function initializeApp() {
@@ -61,119 +59,121 @@ async function initializeApp() {
     console.log(apiResponse);
 
     if (apiResponse && apiResponse.data.links && apiResponse.data.links.length > 0) {
-        console.log(`Yay! We found ${apiResponse.data.length} new links.`);
+        console.log(`Found ${apiResponse.data.links.length} new links.`);
         storageService.saveNewData(apiResponse.data.links);
     } else {
-        console.log("The app is already 100% up to date, no news.");
+        console.log("The app is already up to date.");
     }
 
-    const allMyData = storageService.getLocalData();
-    console.log("My data ready to be displayed on screen:", allMyData);
+    const allLocalData = storageService.getLocalData();
+    console.log("Local data ready for display:", allLocalData);
 }
 
-const botoes = document.querySelectorAll('.bottom-nav .nav-link');
+const buttons = document.querySelectorAll('.bottom-nav .nav-link');
 
-const categorias = {
+const categories = {
     "Documentos": "doc",
     "Transporte": "transit",
     "Saúde": "health",
     "Benefícios": "benefits"
 };
 
-function atualizarNavbar(pagina) {
-    botoes.forEach(botao => {
-        const ativo = botao.dataset.page === pagina;
-        botao.classList.toggle('active', ativo);
-        if (ativo) {
-            botao.setAttribute('aria-current', 'page');
+function updateNavbar(page) {
+    buttons.forEach(button => {
+        const isActive = button.dataset.page === page;
+        button.classList.toggle('active', isActive);
+        if (isActive) {
+            button.setAttribute('aria-current', 'page');
         } else {
-            botao.removeAttribute('aria-current');
+            button.removeAttribute('aria-current');
         }
     });
 }
 
-document.addEventListener('click', async (evento) => {
-    // Botões de tamanho da fonte
-    const btnAumentar = evento.target.closest('#btn-fonte-aumentar');
-    if (btnAumentar) {
-        if (tamanhoFonteAtual < 160) {
-            tamanhoFonteAtual += 10;
-            aplicarTamanhoFonte();
+document.addEventListener('click', async (event) => {
+    // Font size increase button
+    const increaseFontBtn = event.target.closest('#btn-fonte-aumentar');
+    if (increaseFontBtn) {
+        if (currentFontSize < 160) {
+            currentFontSize += 10;
+            applyFontSize();
         }
         return;
     }
 
-    const btnDiminuir = evento.target.closest('#btn-fonte-diminuir');
-    if (btnDiminuir) {
-        if (tamanhoFonteAtual > 80) {
-            tamanhoFonteAtual -= 10;
-            aplicarTamanhoFonte();
+    // Font size decrease button
+    const decreaseFontBtn = event.target.closest('#btn-fonte-diminuir');
+    if (decreaseFontBtn) {
+        if (currentFontSize > 80) {
+            currentFontSize -= 10;
+            applyFontSize();
         }
         return;
     }
 
-    // Abertura/Fechamento do menu de acessibilidade
-    const btnAcessibilidade = evento.target.closest('#accesibility');
-    if (btnAcessibilidade) {
-        const icone = btnAcessibilidade.querySelector('.toggle-icon');
-        const estaAberto = btnAcessibilidade.classList.contains('expandido');
-        const clicouNoIcone = evento.target.closest('.toggle-icon');
+    // Accessibility menu open/close
+    const accessibilityBtn = event.target.closest('#accesibility');
+    if (accessibilityBtn) {
+        const icon = accessibilityBtn.querySelector('.toggle-icon');
+        const isOpen = accessibilityBtn.classList.contains('expandido');
+        const clickedOnIcon = event.target.closest('.toggle-icon');
 
-        if (estaAberto && !clicouNoIcone) {
+        if (isOpen && !clickedOnIcon) {
             return;
         }
 
-        if (!estaAberto) {
-            btnAcessibilidade.classList.add('expandido');
-            icone.classList.replace('bi-universal-access', 'bi-x-circle');
+        if (!isOpen) {
+            accessibilityBtn.classList.add('expandido');
+            icon.classList.replace('bi-universal-access', 'bi-x-circle');
         } else {
-            btnAcessibilidade.classList.remove('expandido');
-            icone.classList.replace('bi-x-circle', 'bi-universal-access');
+            accessibilityBtn.classList.remove('expandido');
+            icon.classList.replace('bi-x-circle', 'bi-universal-access');
         }
         return;
     }
 
-    const botao = evento.target.closest('.bottom-nav [data-page]');
-    if (botao) {
-        const pagina = botao.dataset.page;
-        await window.switchPage(pagina);
-        atualizarNavbar(pagina);
+    const navButton = event.target.closest('.bottom-nav [data-page]');
+    if (navButton) {
+        const page = navButton.dataset.page;
+        await window.switchPage(page);
+        updateNavbar(page);
         return;
     }
 
-    const card = evento.target.closest('.home-card');
+    const card = event.target.closest('.home-card');
     if (card) {
         if (!card.isConnected) return;
-        const nome = card.querySelector('span')?.textContent.trim();
-        const pagina = categorias[nome];
+        const name = card.querySelector('span')?.textContent.trim();
+        const page = categories[name];
 
-        if (pagina) {
-            evento.preventDefault();
-            evento.stopImmediatePropagation();
-            await window.switchPage(pagina);
-            atualizarNavbar('home');
+        if (page) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            await window.switchPage(page);
+            updateNavbar('home');
         }
     }
-    // Voltar para a página inicial ao clicar na logo
-    const logo = evento.target.closest('#logo-home');
+
+    // Return to home page when clicking the logo
+    const logo = event.target.closest('#logo-home');
 
     if (logo) {
         await window.switchPage('home');
-        atualizarNavbar('home');
-        return
+        updateNavbar('home');
+        return;
     }
 });
 
 window.addEventListener('popstate', (event) => {
-    if (event.state && event.state.pagina) {
-        window.switchPage(event.state.pagina, false);
-        if (typeof atualizarNavbar === 'function') {
-            atualizarNavbar(event.state.pagina);
+    if (event.state && event.state.page) {
+        window.switchPage(event.state.page, false);
+        if (typeof updateNavbar === 'function') {
+            updateNavbar(event.state.page);
         }
     } else {
         window.switchPage('home', false);
-        if (typeof atualizarNavbar === 'function') {
-            atualizarNavbar('home');
+        if (typeof updateNavbar === 'function') {
+            updateNavbar('home');
         }
     }
 });
@@ -182,65 +182,66 @@ if (window.VLibras) {
     new window.VLibras.Widget('https://vlibras.gov.br/app');
 }
 
-document.getElementById('vlibras-button').addEventListener('click', function (evento) {
-    evento.preventDefault();
-    evento.stopPropagation();
+document.getElementById('vlibras-button').addEventListener('click', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
 
     const shadowWrapper = document.querySelector('#vlibras-access-wrapper');
     if (shadowWrapper && shadowWrapper.shadowRoot) {
         const shadowBtn = shadowWrapper.shadowRoot.querySelector('#vlibras-button');
         if (shadowBtn) shadowBtn.click();
     } else {
-        const botaoVlibrasOriginal = document.querySelector('[vw-access-button]');
-        if (botaoVlibrasOriginal) {
-            botaoVlibrasOriginal.click();
+        const originalVlibrasButton = document.querySelector('[vw-access-button]');
+        if (originalVlibrasButton) {
+            originalVlibrasButton.click();
         }
     }
 
-    const containerAcessibilidade = document.getElementById('accesibility');
-    const icone = containerAcessibilidade.querySelector('.toggle-icon');
+    const accessibilityContainer = document.getElementById('accesibility');
+    const icon = accessibilityContainer.querySelector('.toggle-icon');
 
-    if (containerAcessibilidade.classList.contains('expandido')) {
-        containerAcessibilidade.classList.remove('expandido');
-        icone.classList.replace('bi-x-circle', 'bi-universal-access');
+    if (accessibilityContainer.classList.contains('expandido')) {
+        accessibilityContainer.classList.remove('expandido');
+        icon.classList.replace('bi-x-circle', 'bi-universal-access');
     }
 });
-const switchContraste = document.getElementById('switch-contraste');
 
-let modoEscuroAtivo = localStorage.getItem('modoEscuro') === 'true';
+const contrastSwitch = document.getElementById('switch-contraste');
 
-function aplicarModoEscuro(ativo) {
+let darkModeActive = localStorage.getItem('darkMode') === 'true';
+
+function applyDarkMode(active) {
     const mainApp = document.getElementById('app');
     const logoImg = document.getElementById('logo-img');
 
-    if (ativo) {
+    if (active) {
         document.body.classList.replace('bg-white', 'bg-1');
         if (mainApp) {
-            mainApp.classList.replace('bg-white', 'bg-1')
-            mainApp.classList.replace("fg-black", "fg-white")
-        };
+            mainApp.classList.replace('bg-white', 'bg-1');
+            mainApp.classList.replace("fg-black", "fg-white");
+        }
 
         if (logoImg) logoImg.src = "/src/assets/img/logo_texto_branco.svg";
 
-        if (switchContraste) switchContraste.checked = true;
+        if (contrastSwitch) contrastSwitch.checked = true;
     } else {
         document.body.classList.replace('bg-1', 'bg-white');
         if (mainApp) mainApp.classList.replace('bg-1', 'bg-white');
 
         if (logoImg) logoImg.src = "/src/assets/img/logo_texto_preto.svg";
 
-        mainApp.classList.replace("fg-white", "fg-black")
-        if (switchContraste) switchContraste.checked = false;
+        if (mainApp) mainApp.classList.replace("fg-white", "fg-black");
+        if (contrastSwitch) contrastSwitch.checked = false;
     }
 }
 
-aplicarModoEscuro(modoEscuroAtivo);
+applyDarkMode(darkModeActive);
 
-if (switchContraste) {
-    switchContraste.addEventListener('change', (evento) => {
-        const ativado = evento.target.checked;
-        aplicarModoEscuro(ativado);
-        localStorage.setItem('modoEscuro', ativado);
+if (contrastSwitch) {
+    contrastSwitch.addEventListener('change', (event) => {
+        const isEnabled = event.target.checked;
+        applyDarkMode(isEnabled);
+        localStorage.setItem('darkMode', isEnabled);
     });
 }
 
@@ -251,9 +252,9 @@ document.addEventListener('focusin', (event) => {
 });
 
 window.switchPage = switchPage;
-const jaViuBoasVindas = localStorage.getItem('@accela:welcome_seen') === 'true';
+const hasSeenWelcome = localStorage.getItem('@accela:welcome_seen') === 'true';
 
-if (jaViuBoasVindas) {
+if (hasSeenWelcome) {
     switchPage('home');
 } else {
     switchPage('welcome');

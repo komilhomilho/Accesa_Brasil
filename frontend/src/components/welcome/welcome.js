@@ -1,4 +1,4 @@
-export function iniciar() {
+export function init() {
     const welcomeBtn = document.getElementById('welcomeBtn');
 
     if (!welcomeBtn) return;
@@ -10,7 +10,6 @@ export function iniciar() {
         if (!document.getElementById('welcomeBtn')) return;
 
         welcomeBtn.disabled = false;
-        welcomeBtn.textContent =
-            'Entendi! Me leve para a página inicial';
+        welcomeBtn.textContent = 'Entendi! Me leve para a página inicial';
     }, 3000);
 }

@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
-const {Schema, model} = mongoose;
+const { Schema, model } = mongoose;
 
 const linkSchema = new Schema({
-    nome :{
+    name: {
         type: String,
         trim: true,
         required: [true, 'The link name is required.']
     },
-    desc : {
+    description: {
         type: String,
         default: '',
         trim: true
     },
-    url :{
-        type: String, 
+    url: {
+        type: String,
         required: [true, 'The URL is mandatory'],
         trim: true
     },
@@ -21,16 +21,16 @@ const linkSchema = new Schema({
         type: [String],
         default: []
     },
-    historicoAtualizacoes  :{
+    lastUpdated: {
         type: Date,
         default: Date.now
     }
 },
-{ collection: 'link'})
+{ collection: 'link' });
 
-linkSchema.index({tags: 1});
-linkSchema.index({historicoAtualizacoes: 1});
+linkSchema.index({ tags: 1 });
+linkSchema.index({ lastUpdated: 1 });
 
-const link = model('link', linkSchema)
+const Link = model('link', linkSchema);
 
-export default link
+export default Link;

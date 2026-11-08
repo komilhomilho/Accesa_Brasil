@@ -1,5 +1,5 @@
-import addArquiveJSON from './addArquiveJSON.js'
+import addArchiveJSON from './addArchiveJSON.util.js';
 
 export default {
-    addArquiveJSON
-}
+    addArchiveJSON
+};

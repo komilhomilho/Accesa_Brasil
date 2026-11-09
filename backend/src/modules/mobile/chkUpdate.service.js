@@ -36,7 +36,7 @@ export async function invalidateChkUpdateCache() {
             console.log.green("[Cache] Version Increment.");
         }
     } catch (error) {
-        console.error("[Cache] Falha ao invalidar:", error.message);
+        console.error("[Cache] Failed to invalidate:", error.message);
     }
 }
 
@@ -81,7 +81,7 @@ export default async function chkUpdate(last_sync) {
         console.log.yellow("[Cache] miss");
 
     } catch (error) {
-        console.error("[Cache] Erro na leitura:", error.message);
+        console.error("[Cache] Read error:", error.message);
         return await checkDatabase(lastSync);
     }
 
@@ -94,7 +94,7 @@ export default async function chkUpdate(last_sync) {
             { EX: CACHE_TTL }
         );
     } catch (error) {
-        console.error("[Cache] Erro ao salvar:", error.message);
+        console.error("[Cache] Save error:", error.message);
     }
 
     return isUpdate;

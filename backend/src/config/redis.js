@@ -7,7 +7,7 @@ const redis = createClient({
 let connecting;
 
 redis.on("error", (error) => {
-    console.error("[Redis]", error.message);
+    console.log.yellow("[Redis]", error.message);
 });
 
 export async function ensureRedis() {
